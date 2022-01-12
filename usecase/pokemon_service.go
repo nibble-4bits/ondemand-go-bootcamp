@@ -10,6 +10,7 @@ type pokemonService struct {
 
 type PokemonService interface {
 	GetByID(id int) (entity.Pokemon, error)
+	GetAll() ([]entity.Pokemon, error)
 }
 
 func NewPokemonService(r PokemonRepository) pokemonService {
@@ -23,4 +24,13 @@ func (s pokemonService) GetByID(id int) (entity.Pokemon, error) {
 	}
 
 	return pokemonFound, nil
+}
+
+func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
+	pokemons, err := s.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return pokemons, nil
 }

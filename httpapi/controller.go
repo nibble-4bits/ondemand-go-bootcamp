@@ -26,3 +26,15 @@ func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 		c.JSON(http.StatusOK, pokemon)
 	}
 }
+
+func getAllPokemonsController(service usecase.PokemonService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pokemons, err := service.GetAll()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, pokemons)
+	}
+}

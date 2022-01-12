@@ -10,6 +10,11 @@ func getPokemonByID(r *gin.Engine, service usecase.PokemonService) {
 	r.GET("/pokemon/:id", getPokemonByIDController(service))
 }
 
+func getAllPokemons(r *gin.Engine, service usecase.PokemonService) {
+	r.GET("/pokemon", getAllPokemonsController(service))
+}
+
 func registerRoutes(r *gin.Engine, service usecase.PokemonService) {
 	getPokemonByID(r, service)
+	getAllPokemons(r, service)
 }
