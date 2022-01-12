@@ -1,6 +1,8 @@
 package httpapi
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
 )
@@ -10,5 +12,8 @@ func StartServer(service usecase.PokemonService) {
 
 	registerRoutes(r, service)
 
-	r.Run()
+	err := r.Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
