@@ -7,6 +7,7 @@ import (
 )
 
 type csvDataSource struct {
+	// Collection is a file path to a CSV file
 	Collection string
 }
 
