@@ -54,5 +54,5 @@ func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {
 		}
 	}
 
-	return entity.Pokemon{}, fmt.Errorf("pokemon with ID: %v not found", id)
+	return entity.Pokemon{}, fmt.Errorf("pokemon with ID %v not found", id)
 }
