@@ -7,12 +7,39 @@ import (
 	"github.com/nibble-4bits/ondemand-go-bootcamp/data"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/httpAPI"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
+
+	"github.com/spf13/viper"
 )
+
+// configuration is a set of properties that are loaded when the program runs
+type configuration struct {
+	// CSVDataPath is a path to the CSV file that contains the data that will be served by the HTTP API
+	CSVDataPath string
+}
+
+// config is a variable that holds the program configuration
+var config configuration
+
+func init() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = viper.Unmarshal(&config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
-	csvDataSource := data.NewCSVDataSource("pokemon.csv")
+	csvDataSource := data.NewCSVDataSource(config.CSVDataPath)
 
 	pokemonAdapter, err := adapter.NewPokemonAdapter(csvDataSource)
 	if err != nil {
