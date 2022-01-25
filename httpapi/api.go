@@ -3,8 +3,9 @@ package httpAPI
 import (
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
+
+	"github.com/gin-gonic/gin"
 )
 
 func StartServer(service usecase.PokemonService) {
