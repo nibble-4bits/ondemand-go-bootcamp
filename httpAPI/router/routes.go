@@ -1,17 +1,18 @@
-package httpAPI
+package router
 
 import (
+	"github.com/nibble-4bits/ondemand-go-bootcamp/httpAPI/controller"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
 func getPokemonByID(r *gin.Engine, service usecase.PokemonService) {
-	r.GET("/pokemons/:id", getPokemonByIDController(service))
+	r.GET("/pokemons/:id", controller.GetPokemonByIDController(service))
 }
 
 func getAllPokemons(r *gin.Engine, service usecase.PokemonService) {
-	r.GET("/pokemons", getAllPokemonsController(service))
+	r.GET("/pokemons", controller.GetAllPokemonsController(service))
 }
 
 func registerRoutes(r *gin.Engine, service usecase.PokemonService) {

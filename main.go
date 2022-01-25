@@ -5,7 +5,7 @@ import (
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/adapter"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/data"
-	"github.com/nibble-4bits/ondemand-go-bootcamp/httpAPI"
+	"github.com/nibble-4bits/ondemand-go-bootcamp/httpAPI/router"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
 
 	"github.com/spf13/viper"
@@ -51,5 +51,5 @@ func main() {
 
 	pokemonService := usecase.NewPokemonService(pokemonAdapter)
 
-	httpAPI.StartServer(pokemonService)
+	router.StartServer(pokemonService)
 }

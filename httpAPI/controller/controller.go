@@ -1,4 +1,4 @@
-package httpAPI
+package controller
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
+func GetPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
@@ -31,7 +31,7 @@ func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 	}
 }
 
-func getAllPokemonsController(service usecase.PokemonService) gin.HandlerFunc {
+func GetAllPokemonsController(service usecase.PokemonService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pokemons, err := service.GetAll()
 		switch {
