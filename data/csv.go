@@ -20,8 +20,8 @@ func NewCSVDataSource(csvPath string) csvDataSource {
 // ReadCollection reads the CSV file associated with the csvDataSource instance
 // and returns an slice of records.
 // Each record is an slice of strings itself.
-func (ds csvDataSource) ReadCollection() [][]string {
-	file, err := os.Open(ds.collection)
+func (c csvDataSource) ReadCollection() [][]string {
+	file, err := os.Open(c.collection)
 	if err != nil {
 		log.Fatalln(err)
 	}
