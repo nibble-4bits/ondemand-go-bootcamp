@@ -1,4 +1,4 @@
-package httpapi
+package httpAPI
 
 import (
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
