@@ -7,16 +7,16 @@ import (
 )
 
 type csvDataSource struct {
-	// Collection is a file path to a CSV file
-	Collection string
+	// collection is a file path to a CSV file.
+	collection string
 }
 
 func NewCSVDataSource(csvPath string) csvDataSource {
-	return csvDataSource{Collection: csvPath}
+	return csvDataSource{collection: csvPath}
 }
 
 func (ds csvDataSource) ReadCollection() [][]string {
-	file, err := os.Open(ds.Collection)
+	file, err := os.Open(ds.collection)
 	if err != nil {
 		log.Fatalln(err)
 	}
