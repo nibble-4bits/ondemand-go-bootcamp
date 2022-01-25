@@ -20,7 +20,7 @@ func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 
 		pokemon, err := service.GetByID(id)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
 
