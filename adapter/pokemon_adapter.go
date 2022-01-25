@@ -34,7 +34,7 @@ func (a *pokemonAdapter) getPokemons() error {
 	for _, v := range csvRecords {
 		p := entity.Pokemon{}
 
-		p.Id, _ = strconv.Atoi(v[0])
+		p.ID, _ = strconv.Atoi(v[0])
 		p.Name = v[1]
 		p.Type1 = v[2]
 		p.Type2 = v[3]
@@ -56,7 +56,7 @@ func (a *pokemonAdapter) getPokemons() error {
 
 func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {
 	for _, pokemon := range a.pokemons {
-		if id == pokemon.Id {
+		if id == pokemon.ID {
 			return pokemon, nil
 		}
 	}

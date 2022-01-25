@@ -2,7 +2,7 @@ package entity
 
 // Pokemon is a struct that represents the features of a pokemon
 type Pokemon struct {
-	Id         int    `json:"id"`
+	ID         int    `json:"id"`
 	Name       string `json:"name"`
 	Type1      string `json:"type1"`
 	Type2      string `json:"type2"`
