@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
 )
 
@@ -20,7 +22,7 @@ func NewPokemonService(r PokemonRepository) pokemonService {
 func (s pokemonService) GetByID(id int) (entity.Pokemon, error) {
 	pokemonFound, err := s.repo.GetByID(id)
 	if err != nil {
-		return entity.Pokemon{}, err
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	return pokemonFound, nil
@@ -29,7 +31,7 @@ func (s pokemonService) GetByID(id int) (entity.Pokemon, error) {
 func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
 	pokemons, err := s.repo.GetAll()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	return pokemons, nil

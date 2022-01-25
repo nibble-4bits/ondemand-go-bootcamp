@@ -1,9 +1,15 @@
 package adapter
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
+)
+
+var (
+	ErrPokemonsNotFound    = errors.New("no pokemons found")
+	ErrPokemonNotFoundByID = errors.New("no pokemon found by ID")
 )
 
 type pokemonAdapter struct {
@@ -60,9 +66,13 @@ func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {
 		}
 	}
 
-	return entity.Pokemon{}, fmt.Errorf("pokemon with ID %v not found", id)
+	return entity.Pokemon{}, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {
+	if len(a.pokemons) == 0 {
+		return nil, ErrPokemonsNotFound
+	}
+
 	return a.pokemons, nil
 }

@@ -1,9 +1,11 @@
 package httpAPI
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/nibble-4bits/ondemand-go-bootcamp/adapter"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +21,8 @@ func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 		}
 
 		pokemon, err := service.GetByID(id)
-		if err != nil {
+		switch {
+		case errors.Is(err, adapter.ErrPokemonNotFoundByID):
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -31,7 +34,8 @@ func getPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 func getAllPokemonsController(service usecase.PokemonService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pokemons, err := service.GetAll()
-		if err != nil {
+		switch {
+		case errors.Is(err, adapter.ErrPokemonsNotFound):
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
