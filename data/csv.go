@@ -2,7 +2,6 @@ package data
 
 import (
 	"encoding/csv"
-	"log"
 	"os"
 )
 
@@ -20,18 +19,18 @@ func NewCSVDataSource(csvPath string) csvDataSource {
 // ReadCollection reads the CSV file associated with the csvDataSource instance
 // and returns an slice of records.
 // Each record is an slice of strings itself.
-func (c csvDataSource) ReadCollection() [][]string {
+func (c csvDataSource) ReadCollection() ([][]string, error) {
 	file, err := os.Open(c.collection)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	defer file.Close()
 
 	csvReader := csv.NewReader(file)
 	records, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	return records
+	return records, nil
 }

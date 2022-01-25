@@ -12,16 +12,21 @@ type pokemonAdapter struct {
 	pokemons   []entity.Pokemon
 }
 
-func NewPokemonAdapter(ds DataSource) *pokemonAdapter {
+func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
 	adapter := &pokemonAdapter{dataSource: ds}
 
-	adapter.getPokemons()
+	if err := adapter.getPokemons(); err != nil {
+		return nil, err
+	}
 
-	return adapter
+	return adapter, nil
 }
 
-func (a *pokemonAdapter) getPokemons() {
-	csvRecords := a.dataSource.ReadCollection()
+func (a *pokemonAdapter) getPokemons() error {
+	csvRecords, err := a.dataSource.ReadCollection()
+	if err != nil {
+		return err
+	}
 
 	// Remove header from slice of records
 	csvRecords = csvRecords[1:]
@@ -45,6 +50,8 @@ func (a *pokemonAdapter) getPokemons() {
 
 		a.pokemons = append(a.pokemons, p)
 	}
+
+	return nil
 }
 
 func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {

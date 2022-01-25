@@ -13,7 +13,15 @@ func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
 	csvDataSource := data.NewCSVDataSource("pokemon.csv")
-	pokemonAdapter := adapter.NewPokemonAdapter(csvDataSource)
+
+	pokemonAdapter, err := adapter.NewPokemonAdapter(csvDataSource)
+	if err != nil {
+		// Could handle the error here more gracefully, for example
+		// we could try and fetch the pokemons from another data source.
+		// For now, just exit fatally and log the error.
+		log.Fatalln(err)
+	}
+
 	pokemonService := usecase.NewPokemonService(pokemonAdapter)
 
 	httpAPI.StartServer(pokemonService)
