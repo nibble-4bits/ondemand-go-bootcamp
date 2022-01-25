@@ -1,5 +1,6 @@
 package entity
 
+// Pokemon is a struct that represents the features of a pokemon
 type Pokemon struct {
 	Id         int    `json:"id"`
 	Name       string `json:"name"`
