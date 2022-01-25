@@ -59,14 +59,14 @@ func (a *pokemonAdapter) getPokemons() error {
 	return nil
 }
 
-func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {
+func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	for _, pokemon := range a.pokemons {
 		if id == int(pokemon.ID) {
-			return pokemon, nil
+			return &pokemon, nil
 		}
 	}
 
-	return entity.Pokemon{}, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
+	return nil, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {
