@@ -17,6 +17,11 @@ type pokemonAdapter struct {
 	pokemons   []entity.Pokemon
 }
 
+// NewPokemonAdapter receives a data source and will try to fetch the
+// list of pokemons from a data source.
+//
+// If successful, an instance of *pokemonAdapter will be returned.
+// Otherwise and error will be returned.
 func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
 	adapter := &pokemonAdapter{dataSource: ds}
 
@@ -59,6 +64,10 @@ func (a *pokemonAdapter) getPokemons() error {
 	return nil
 }
 
+// GetByID searches for a pokemon with the given id parameter.
+//
+// If the search is successful, a pointer to the found Pokemon is returned.
+// Otherwise and ErrPokemonNotFoundByID error is returned.
 func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	for _, pokemon := range a.pokemons {
 		if id == int(pokemon.ID) {
@@ -69,6 +78,9 @@ func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	return nil, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
+// GetAll returns an slice of all pokemons.
+//
+// In case no pokemons are found at all, an ErrPokemonsNotFound error is returned.
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {
 	if len(a.pokemons) == 0 {
 		return nil, ErrPokemonsNotFound

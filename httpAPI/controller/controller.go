@@ -11,7 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
+// GetPokemonByID handles the logic of getting a pokemon by ID from a data source and sending it to an http client
+// as a JSON object.
+//
+// If an error occurs, it will send that instead.
+func GetPokemonByID(service usecase.PokemonService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
@@ -31,7 +35,11 @@ func GetPokemonByIDController(service usecase.PokemonService) gin.HandlerFunc {
 	}
 }
 
-func GetAllPokemonsController(service usecase.PokemonService) gin.HandlerFunc {
+// GetAllPokemons handles the logic of getting all pokemons from a data source and sending it to an http client
+// as a JSON array.
+//
+// If an error occurs, it will send that instead.
+func GetAllPokemons(service usecase.PokemonService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		pokemons, err := service.GetAll()
 		switch {

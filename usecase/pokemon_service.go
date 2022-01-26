@@ -10,11 +10,14 @@ type pokemonService struct {
 	repo PokemonRepository
 }
 
+// PokemonService is an interface that represents basic CRUD operations
+// that can be executed on a Pokemon entity
 type PokemonService interface {
 	GetByID(id int) (*entity.Pokemon, error)
 	GetAll() ([]entity.Pokemon, error)
 }
 
+// NewPokemonService receives a PokemonRepository and returns an instance of pokemonService
 func NewPokemonService(r PokemonRepository) pokemonService {
 	return pokemonService{repo: r}
 }

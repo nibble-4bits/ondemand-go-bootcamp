@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// StartServer makes the HTTP server start listening for requests
 func StartServer(service usecase.PokemonService) {
 	r := gin.Default()
 
