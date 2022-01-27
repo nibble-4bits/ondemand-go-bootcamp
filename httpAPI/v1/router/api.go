@@ -10,11 +10,13 @@ import (
 
 // StartServer makes the HTTP server start listening for requests
 func StartServer(service usecase.PokemonService) {
-	r := gin.Default()
+	router := gin.Default()
 
-	registerRoutes(r, service)
+	v1 := router.Group("/v1")
 
-	err := r.Run()
+	registerRoutes(v1, service)
+
+	err := router.Run()
 	if err != nil {
 		log.Fatalln(err)
 	}
