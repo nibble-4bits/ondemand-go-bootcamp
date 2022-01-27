@@ -6,5 +6,5 @@ package adapter
 type DataSource interface {
 	// ReadCollection reads the collection that belongs to the current DataSource and returns
 	// the items as a slice of slices of strings
-	ReadCollection() [][]string
+	ReadCollection() ([][]string, error)
 }

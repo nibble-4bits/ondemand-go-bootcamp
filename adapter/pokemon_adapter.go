@@ -1,10 +1,15 @@
 package adapter
 
 import (
+	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
+)
+
+var (
+	ErrPokemonsNotFound    = errors.New("no pokemons found")
+	ErrPokemonNotFoundByID = errors.New("no pokemon found by ID")
 )
 
 type pokemonAdapter struct {
@@ -12,16 +17,26 @@ type pokemonAdapter struct {
 	pokemons   []entity.Pokemon
 }
 
-func NewPokemonAdapter(ds DataSource) *pokemonAdapter {
+// NewPokemonAdapter receives a data source and will try to fetch the
+// list of pokemons from a data source.
+//
+// If successful, an instance of *pokemonAdapter will be returned.
+// Otherwise and error will be returned.
+func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
 	adapter := &pokemonAdapter{dataSource: ds}
 
-	adapter.getPokemons()
+	if err := adapter.getPokemons(); err != nil {
+		return nil, err
+	}
 
-	return adapter
+	return adapter, nil
 }
 
-func (a *pokemonAdapter) getPokemons() {
-	csvRecords := a.dataSource.ReadCollection()
+func (a *pokemonAdapter) getPokemons() error {
+	csvRecords, err := a.dataSource.ReadCollection()
+	if err != nil {
+		return err
+	}
 
 	// Remove header from slice of records
 	csvRecords = csvRecords[1:]
@@ -29,34 +44,47 @@ func (a *pokemonAdapter) getPokemons() {
 	for _, v := range csvRecords {
 		p := entity.Pokemon{}
 
-		p.Id, _ = strconv.Atoi(v[0])
+		p.ID.ParseInt(v[0], -1)
 		p.Name = v[1]
 		p.Type1 = v[2]
 		p.Type2 = v[3]
-		p.Total, _ = strconv.Atoi(v[4])
-		p.HP, _ = strconv.Atoi(v[5])
-		p.Attack, _ = strconv.Atoi(v[6])
-		p.Defense, _ = strconv.Atoi(v[7])
-		p.SpAtk, _ = strconv.Atoi(v[8])
-		p.SpDef, _ = strconv.Atoi(v[9])
-		p.Speed, _ = strconv.Atoi(v[10])
-		p.Generation, _ = strconv.Atoi(v[11])
-		p.Legendary, _ = strconv.ParseBool(v[12])
+		p.Total.ParseInt(v[4], -1)
+		p.HP.ParseInt(v[5], -1)
+		p.Attack.ParseInt(v[6], -1)
+		p.Defense.ParseInt(v[7], -1)
+		p.SpAtk.ParseInt(v[8], -1)
+		p.SpDef.ParseInt(v[9], -1)
+		p.Speed.ParseInt(v[10], -1)
+		p.Generation.ParseInt(v[11], -1)
+		p.Legendary.ParseBool(v[12], false)
 
 		a.pokemons = append(a.pokemons, p)
 	}
+
+	return nil
 }
 
-func (a *pokemonAdapter) GetByID(id int) (entity.Pokemon, error) {
+// GetByID searches for a pokemon with the given id parameter.
+//
+// If the search is successful, a pointer to the found Pokemon is returned.
+// Otherwise and ErrPokemonNotFoundByID error is returned.
+func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	for _, pokemon := range a.pokemons {
-		if id == pokemon.Id {
-			return pokemon, nil
+		if id == int(pokemon.ID) {
+			return &pokemon, nil
 		}
 	}
 
-	return entity.Pokemon{}, fmt.Errorf("pokemon with ID %v not found", id)
+	return nil, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
+// GetAll returns an slice of all pokemons.
+//
+// In case no pokemons are found at all, an ErrPokemonsNotFound error is returned.
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {
+	if len(a.pokemons) == 0 {
+		return nil, ErrPokemonsNotFound
+	}
+
 	return a.pokemons, nil
 }

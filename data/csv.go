@@ -2,31 +2,35 @@ package data
 
 import (
 	"encoding/csv"
-	"log"
 	"os"
 )
 
+// csvDataSource represents a data source that reads from a CSV file.
 type csvDataSource struct {
-	// Collection is a file path to a CSV file
-	Collection string
+	// collection is a file path to a CSV file.
+	collection string
 }
 
+// NewCSVDataSource receives a path to a CSV file and returns an instance of csvDataSource.
 func NewCSVDataSource(csvPath string) csvDataSource {
-	return csvDataSource{Collection: csvPath}
+	return csvDataSource{collection: csvPath}
 }
 
-func (ds csvDataSource) ReadCollection() [][]string {
-	file, err := os.Open(ds.Collection)
+// ReadCollection reads the CSV file associated with the csvDataSource instance
+// and returns an slice of records.
+// Each record is an slice of strings itself.
+func (c csvDataSource) ReadCollection() ([][]string, error) {
+	file, err := os.Open(c.collection)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	defer file.Close()
 
 	csvReader := csv.NewReader(file)
 	records, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	return records
+	return records, nil
 }
