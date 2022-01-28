@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
@@ -70,7 +71,7 @@ func (a *commentAdapter) saveRecord(comment *entity.Comment) {
 
 	err := a.dataStore.SaveRecord(record)
 	if err != nil {
-		panic(err)
+		log.Printf("Error trying to save record to data store: %v", err)
 	}
 }
 
