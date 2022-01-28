@@ -47,7 +47,7 @@ func NewCSVDataStore(csvPath string) csvDataStore {
 }
 
 func (c csvDataStore) SaveRecord(record []string) error {
-	file, err := os.Open(c.store)
+	file, err := os.OpenFile(c.store, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return err
 	}
