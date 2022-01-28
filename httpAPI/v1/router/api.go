@@ -3,19 +3,23 @@ package router
 import (
 	"log"
 
-	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
-
 	"github.com/gin-gonic/gin"
 )
 
-// StartServer makes the HTTP server start listening for requests
-func StartServer(service usecase.PokemonService) {
+func CreateRouter() *gin.Engine {
 	router := gin.Default()
 
+	return router
+}
+
+func CreateRouterGroup(router *gin.Engine) *gin.RouterGroup {
 	v1 := router.Group("/v1")
 
-	registerPokemonRoutes(v1, service)
+	return v1
+}
 
+// StartServer makes the HTTP server start listening for requests
+func StartServer(router *gin.Engine) {
 	err := router.Run()
 	if err != nil {
 		log.Fatalln(err)

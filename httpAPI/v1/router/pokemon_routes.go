@@ -15,7 +15,7 @@ func getAllPokemons(r *gin.RouterGroup, service usecase.PokemonService) {
 	r.GET("/pokemons", controller.GetAllPokemons(service))
 }
 
-func registerPokemonRoutes(r *gin.RouterGroup, service usecase.PokemonService) {
+func RegisterPokemonRoutes(r *gin.RouterGroup, service usecase.PokemonService) {
 	getPokemonByID(r, service)
 	getAllPokemons(r, service)
 }
