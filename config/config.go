@@ -9,6 +9,7 @@ import (
 // configuration is a set of properties that are loaded when the program runs
 type configuration struct {
 	PokemonCSVPath string `mapstructure:"pokemon_csv_path"`
+	CommentCSVPath string `mapstructure:"comment_csv_path"`
 }
 
 // Config is a variable that holds the program configuration
