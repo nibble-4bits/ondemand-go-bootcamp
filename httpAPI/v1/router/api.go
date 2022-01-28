@@ -14,7 +14,7 @@ func StartServer(service usecase.PokemonService) {
 
 	v1 := router.Group("/v1")
 
-	registerRoutes(v1, service)
+	registerPokemonRoutes(v1, service)
 
 	err := router.Run()
 	if err != nil {
