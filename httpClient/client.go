@@ -31,7 +31,7 @@ func New() *Client {
 }
 
 // Get issues a GET request to the specified URL.
-func (c Client) Get(url string) (*Response, error) {
+func (c *Client) Get(url string) (*Response, error) {
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err
