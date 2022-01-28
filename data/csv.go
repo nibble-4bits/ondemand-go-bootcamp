@@ -34,3 +34,37 @@ func (c csvDataSource) ReadCollection() ([][]string, error) {
 
 	return records, nil
 }
+
+// csvDataStore represents a data store that saves to a CSV file.
+type csvDataStore struct {
+	// store is a file path to a CSV file.
+	store string
+}
+
+// NewCSVDataStore receives a path to a CSV file and returns an instance of csvDataStore.
+func NewCSVDataStore(csvPath string) csvDataStore {
+	return csvDataStore{store: csvPath}
+}
+
+func (c csvDataStore) SaveRecord(record []string) error {
+	file, err := os.Open(c.store)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	csvWriter := csv.NewWriter(file)
+	err = csvWriter.Write(record)
+	if err != nil {
+		return err
+	}
+
+	csvWriter.Flush()
+
+	err = csvWriter.Error()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
