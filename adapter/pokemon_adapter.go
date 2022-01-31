@@ -38,9 +38,6 @@ func (a *pokemonAdapter) getPokemons() error {
 		return err
 	}
 
-	// Remove header from slice of records
-	csvRecords = csvRecords[1:]
-
 	for _, v := range csvRecords {
 		p := entity.Pokemon{}
 

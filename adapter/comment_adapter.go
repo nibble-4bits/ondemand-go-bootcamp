@@ -42,9 +42,6 @@ func (a *commentAdapter) getComments() error {
 		return err
 	}
 
-	// Remove header from slice of records
-	csvRecords = csvRecords[1:]
-
 	for _, v := range csvRecords {
 		c := entity.Comment{}
 

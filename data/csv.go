@@ -32,6 +32,9 @@ func (c csvDataSource) ReadCollection() ([][]string, error) {
 		return nil, err
 	}
 
+	// Remove header from slice of records
+	records = records[1:]
+
 	return records, nil
 }
 
