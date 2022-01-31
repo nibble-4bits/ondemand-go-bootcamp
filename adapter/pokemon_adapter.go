@@ -13,8 +13,8 @@ var (
 )
 
 type pokemonAdapter struct {
-	dataSource DataSource
-	pokemons   []entity.Pokemon
+	csvDataSource CSVDataSource
+	pokemons      []entity.Pokemon
 }
 
 // NewPokemonAdapter receives a data source and will try to fetch the
@@ -22,8 +22,8 @@ type pokemonAdapter struct {
 //
 // If successful, an instance of *pokemonAdapter will be returned.
 // Otherwise and error will be returned.
-func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
-	adapter := &pokemonAdapter{dataSource: ds}
+func NewPokemonAdapter(ds CSVDataSource) (*pokemonAdapter, error) {
+	adapter := &pokemonAdapter{csvDataSource: ds}
 
 	if err := adapter.getPokemons(); err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
 }
 
 func (a *pokemonAdapter) getPokemons() error {
-	csvRecords, err := a.dataSource.ReadCollection()
+	csvRecords, err := a.csvDataSource.ReadCollection()
 	if err != nil {
 		return err
 	}

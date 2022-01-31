@@ -28,9 +28,10 @@ func main() {
 	// ==========================================================================
 
 	csvDataSourceComment := data.NewCSVDataSource(config.Config.CommentCSVPath)
+	httpDataSourceComment := data.NewHTTPDataSource()
 	csvDataStoreComment := data.NewCSVDataStore(config.Config.CommentCSVPath)
 
-	commentAdapter, err := adapter.NewCommentAdapter(csvDataSourceComment, csvDataStoreComment)
+	commentAdapter, err := adapter.NewCommentAdapter(csvDataSourceComment, httpDataSourceComment, csvDataStoreComment)
 	if err != nil {
 		log.Fatalln(err)
 	}

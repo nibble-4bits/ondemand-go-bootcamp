@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
-	"github.com/nibble-4bits/ondemand-go-bootcamp/httpClient"
 )
 
 var (
@@ -16,9 +15,10 @@ var (
 )
 
 type commentAdapter struct {
-	dataSource DataSource
-	dataStore  DataStore
-	comments   []entity.Comment
+	csvDataSource  CSVDataSource
+	httpDataSource HTTPDataSource
+	dataStore      DataStore
+	comments       []entity.Comment
 }
 
 // NewCommentAdapter receives a data source and will try to fetch the
@@ -26,8 +26,8 @@ type commentAdapter struct {
 //
 // If successful, an instance of *commentAdapter will be returned.
 // Otherwise and error will be returned.
-func NewCommentAdapter(source DataSource, store DataStore) (*commentAdapter, error) {
-	adapter := &commentAdapter{dataSource: source, dataStore: store}
+func NewCommentAdapter(csvSource CSVDataSource, httpSource HTTPDataSource, store DataStore) (*commentAdapter, error) {
+	adapter := &commentAdapter{csvDataSource: csvSource, httpDataSource: httpSource, dataStore: store}
 
 	if err := adapter.getComments(); err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func NewCommentAdapter(source DataSource, store DataStore) (*commentAdapter, err
 }
 
 func (a *commentAdapter) getComments() error {
-	csvRecords, err := a.dataSource.ReadCollection()
+	csvRecords, err := a.csvDataSource.ReadCollection()
 	if err != nil {
 		return err
 	}
@@ -74,8 +74,8 @@ func (a *commentAdapter) saveRecord(comment *entity.Comment) {
 
 func (a *commentAdapter) getCommentByIDFromAPI(id int) (*entity.Comment, error) {
 	comment := &entity.Comment{}
-	client := httpClient.New()
-	resp, err := client.Get(fmt.Sprintf("https://jsonplaceholder.typicode.com/comments/%v", id))
+	endpoint := fmt.Sprintf("https://jsonplaceholder.typicode.com/comments/%v", id)
+	resp, err := a.httpDataSource.ReadItem(endpoint)
 	if err != nil {
 		return nil, err
 	}
