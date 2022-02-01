@@ -25,10 +25,14 @@ func GetCommentByID(service usecase.CommentService) gin.HandlerFunc {
 		}
 
 		comment, err := service.GetByID(id)
-		switch {
-		case errors.Is(err, adapter.ErrCommentNotFoundByID):
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
+		if err != nil {
+			switch {
+			case errors.Is(err, adapter.ErrCommentNotFoundByID):
+				c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+				return
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			}
 		}
 
 		c.JSON(http.StatusOK, comment)
