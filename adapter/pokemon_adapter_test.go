@@ -7,7 +7,6 @@ import (
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 var mockPokemonCSVData = [][]string{
@@ -62,15 +61,6 @@ var mockPokemons = []entity.Pokemon{
 		Generation: 1,
 		Legendary:  false,
 	},
-}
-
-type mockCSVDataSource struct {
-	mock.Mock
-}
-
-func (m mockCSVDataSource) ReadCollection() ([][]string, error) {
-	args := m.Called()
-	return args.Get(0).([][]string), args.Error(1)
 }
 
 func TestPokemonAdapter_GetByID(t *testing.T) {
