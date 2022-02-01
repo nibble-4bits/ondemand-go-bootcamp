@@ -21,6 +21,7 @@ func NewCommentService(r CommentRepository) commentService {
 	return commentService{repo: r}
 }
 
+// GetByID returns a comment by ID from the underlying service repository.
 func (s commentService) GetByID(id int) (*entity.Comment, error) {
 	commentFound, err := s.repo.GetByID(id)
 	if err != nil {

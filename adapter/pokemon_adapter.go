@@ -25,14 +25,14 @@ type pokemonAdapter struct {
 func NewPokemonAdapter(ds CSVDataSource) (*pokemonAdapter, error) {
 	adapter := &pokemonAdapter{csvDataSource: ds}
 
-	if err := adapter.getPokemons(); err != nil {
+	if err := adapter.loadPokemons(); err != nil {
 		return nil, err
 	}
 
 	return adapter, nil
 }
 
-func (a *pokemonAdapter) getPokemons() error {
+func (a *pokemonAdapter) loadPokemons() error {
 	csvRecords, err := a.csvDataSource.ReadCollection()
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	return nil, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
-// GetAll returns an slice of all pokemons.
+// GetAll returns a slice of all pokemons.
 //
 // In case no pokemons are found at all, an ErrPokemonsNotFound error is returned.
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {

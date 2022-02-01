@@ -5,5 +5,7 @@ package adapter
 //
 // Examples of data stores could be: a database table, a file or even an API.
 type DataStore interface {
+	// SaveRecord saves a single record, represented as a slice of strings,
+	// to the underlying data storage.
 	SaveRecord([]string) error
 }

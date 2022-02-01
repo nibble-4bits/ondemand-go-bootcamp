@@ -18,7 +18,7 @@ func NewCSVDataSource(csvPath string) csvDataSource {
 
 // ReadCollection reads the CSV file associated with the csvDataSource instance
 // and returns an slice of records.
-// Each record is an slice of strings itself.
+// Each record is a slice of strings itself.
 func (c csvDataSource) ReadCollection() ([][]string, error) {
 	file, err := os.Open(c.collection)
 	if err != nil {
@@ -49,6 +49,9 @@ func NewCSVDataStore(csvPath string) csvDataStore {
 	return csvDataStore{store: csvPath}
 }
 
+// SaveRecord saves a record to the CSV file associated with the csvDataStore instance.
+//
+// If the save is successful, a nil error is returned.
 func (c csvDataStore) SaveRecord(record []string) error {
 	file, err := os.OpenFile(c.store, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {

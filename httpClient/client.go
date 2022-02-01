@@ -7,7 +7,7 @@ import (
 )
 
 // Response represents an HTTP response. It contains some of the fields in http.Response.
-// It is meant to be used as a simpler Response structure.
+// It is meant to be used as a simpler structure instead of http.Response.
 type Response struct {
 	Body          []byte
 	ContentLength int64

@@ -29,14 +29,14 @@ type commentAdapter struct {
 func NewCommentAdapter(csvSource CSVDataSource, httpSource HTTPDataSource, store DataStore) (*commentAdapter, error) {
 	adapter := &commentAdapter{csvDataSource: csvSource, httpDataSource: httpSource, dataStore: store}
 
-	if err := adapter.getComments(); err != nil {
+	if err := adapter.loadComments(); err != nil {
 		return nil, err
 	}
 
 	return adapter, nil
 }
 
-func (a *commentAdapter) getComments() error {
+func (a *commentAdapter) loadComments() error {
 	csvRecords, err := a.csvDataSource.ReadCollection()
 	if err != nil {
 		return err
