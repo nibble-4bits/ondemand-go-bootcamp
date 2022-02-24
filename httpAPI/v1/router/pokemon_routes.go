@@ -15,7 +15,12 @@ func getAllPokemons(r *gin.RouterGroup, service usecase.PokemonService) {
 	r.GET("/pokemons", controller.GetAllPokemons(service))
 }
 
+func getPokemonsByEvenOrOddID(r *gin.RouterGroup, service usecase.PokemonService) {
+	r.GET("/pokemons/type/:parity/items/:items/items_per_worker/:items_per_worker", controller.GetEvenOrOddPokemons(service))
+}
+
 func RegisterPokemonRoutes(r *gin.RouterGroup, service usecase.PokemonService) {
 	getPokemonByID(r, service)
 	getAllPokemons(r, service)
+	getPokemonsByEvenOrOddID(r, service)
 }
