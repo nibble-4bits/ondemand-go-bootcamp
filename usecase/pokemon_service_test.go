@@ -31,6 +31,11 @@ func (c mockPokemonRepo) GetAll() ([]entity.Pokemon, error) {
 	return args.Get(0).([]entity.Pokemon), args.Error(1)
 }
 
+func (c mockPokemonRepo) GetByParity(parity string, itemCount int, quota int) ([]entity.Pokemon, error) {
+	args := c.Called()
+	return args.Get(0).([]entity.Pokemon), args.Error(1)
+}
+
 func TestPokemonService_GetByID(t *testing.T) {
 	tests := []struct {
 		id   int
@@ -78,6 +83,55 @@ func TestPokemonService_GetAll(t *testing.T) {
 
 		t.Run(test.name, func(t *testing.T) {
 			pokemons, err := service.GetAll()
+
+			if err != nil {
+				assert.EqualError(t, err, test.err.Error())
+			} else {
+				assert.Equal(t, pokemons, test.want)
+			}
+		})
+	}
+}
+
+func TestPokemonService_GetByParity(t *testing.T) {
+	tests := []struct {
+		name      string
+		parity    string
+		itemCount int
+		quota     int
+		want      []entity.Pokemon
+		err       error
+	}{
+		{
+			name:      "Get even pokemons successfully",
+			parity:    "even",
+			itemCount: 5,
+			quota:     1,
+			want:      []entity.Pokemon{mockPokemons[1]},
+			err:       nil,
+		},
+		{
+			name:      "Get odd pokemons successfully",
+			parity:    "odd",
+			itemCount: 5,
+			quota:     1,
+			want:      []entity.Pokemon{mockPokemons[0], mockPokemons[2]},
+			err:       nil,
+		},
+		{
+			name: "Error on get by parity",
+			want: nil,
+			err:  errors.New("an error has occurred"),
+		},
+	}
+
+	for _, test := range tests {
+		repo := mockPokemonRepo{}
+		repo.On("GetByParity").Return(test.want, test.err)
+		service := NewPokemonService(repo)
+
+		t.Run(test.name, func(t *testing.T) {
+			pokemons, err := service.GetByParity(test.parity, test.itemCount, test.quota)
 
 			if err != nil {
 				assert.EqualError(t, err, test.err.Error())

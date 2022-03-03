@@ -124,3 +124,77 @@ func TestPokemonService_GetAll(t *testing.T) {
 		})
 	}
 }
+
+func TestPokemonService_GetByParity(t *testing.T) {
+	tests := []struct {
+		name      string
+		csvData   [][]string
+		parity    string
+		itemCount int
+		quota     int
+		want      []entity.Pokemon
+		err       error
+	}{
+		{
+			name:      "Get even pokemons successfully",
+			csvData:   mockPokemonCSVData,
+			parity:    "even",
+			itemCount: 5,
+			quota:     1,
+			want:      []entity.Pokemon{mockPokemons[1]},
+			err:       nil,
+		},
+		{
+			name:      "Get odd pokemons successfully",
+			csvData:   mockPokemonCSVData,
+			parity:    "odd",
+			itemCount: 5,
+			quota:     1,
+			want:      []entity.Pokemon{mockPokemons[0], mockPokemons[2]},
+			err:       nil,
+		},
+		{
+			name:      "Error on empty data",
+			csvData:   nil,
+			parity:    "even",
+			itemCount: 5,
+			quota:     1,
+			want:      nil,
+			err:       ErrPokemonsNotFound,
+		},
+		{
+			name:    "Error on unsupported parity",
+			csvData: mockPokemonCSVData,
+			parity:  "unsupported",
+			want:    nil,
+			err:     ErrUnsupportedParityType,
+		},
+		{
+			name:      "Error on max worker limit exceeded",
+			csvData:   mockPokemonCSVData,
+			parity:    "even",
+			itemCount: 21,
+			quota:     1,
+			want:      nil,
+			err:       ErrMaxNumberOfWorkers,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			csvDataSource := mockCSVDataSource{}
+			csvDataSource.On("ReadCollection").Return(test.csvData, nil)
+			adapter, err := NewPokemonAdapter(csvDataSource)
+
+			assert.Nil(t, err)
+
+			pokemons, err := adapter.GetByParity(test.parity, test.itemCount, test.quota)
+
+			if err != nil {
+				assert.ErrorIs(t, err, test.err)
+			} else {
+				assert.ElementsMatch(t, pokemons, test.want)
+			}
+		})
+	}
+}
