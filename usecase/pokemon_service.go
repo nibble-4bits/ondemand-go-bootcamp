@@ -53,7 +53,7 @@ func (s pokemonService) GetByParity(parity string, workers int, itemCount int, q
 		return nil, ErrUnsupportedParityType
 	}
 
-	workerFunc := func(id int, parity string, quota int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon) {
+	workerFunc := func(parity string, quota int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon) {
 		found := 0
 
 		for p := range jobs {
@@ -82,7 +82,7 @@ func (s pokemonService) GetByParity(parity string, workers int, itemCount int, q
 		if remainingItems < quota {
 			actualQuota = remainingItems
 		}
-		go workerFunc(i+1, parity, actualQuota, jobs, results)
+		go workerFunc(parity, actualQuota, jobs, results)
 		remainingItems -= quota
 	}
 
