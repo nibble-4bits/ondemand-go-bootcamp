@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"math"
 	"net/http"
 	"strconv"
 
@@ -92,11 +91,7 @@ func GetEvenOrOddPokemons(service usecase.PokemonService) gin.HandlerFunc {
 			return
 		}
 
-		// The number of workers is calculated as the itemCount divided by the items per worker
-		// We use the math.Ceil function to ensure the number of workers is at least 1
-		// in case itemCount < itemsPerWorker
-		workers := math.Ceil(float64(itemCount) / float64(itemsPerWorker))
-		pokemons, err := service.GetByParity(parity, int(workers), itemCount, itemsPerWorker)
+		pokemons, err := service.GetByParity(parity, itemCount, itemsPerWorker)
 		if err != nil {
 			switch {
 			case errors.Is(err, adapter.ErrPokemonsNotFound):

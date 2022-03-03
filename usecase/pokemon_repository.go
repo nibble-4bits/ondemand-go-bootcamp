@@ -7,5 +7,5 @@ import "github.com/nibble-4bits/ondemand-go-bootcamp/entity"
 type PokemonRepository interface {
 	GetByID(id int) (*entity.Pokemon, error)
 	GetAll() ([]entity.Pokemon, error)
-	GetByParity(parity string, workers int, itemCount int, quota int) ([]entity.Pokemon, error)
+	GetByParity(parity string, itemCount int, quota int) ([]entity.Pokemon, error)
 }

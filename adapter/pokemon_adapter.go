@@ -3,6 +3,7 @@ package adapter
 import (
 	"errors"
 	"fmt"
+	"math"
 	"sync"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
@@ -101,16 +102,19 @@ func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {
 //
 // - parity: Must be "even" or "odd".
 //
-// - workers: The number of goroutines to spawn.
-//
 // - itemCount: The number of pokemons that must appear in the resulting slice.
 //
 // - quota: The number of pokemons each goroutine will process at most to verify if they match
 // the corresponding parity.
-func (a *pokemonAdapter) GetByParity(parity string, workers int, itemCount int, quota int) ([]entity.Pokemon, error) {
+func (a *pokemonAdapter) GetByParity(parity string, itemCount int, quota int) ([]entity.Pokemon, error) {
 	if parity != "even" && parity != "odd" {
 		return nil, ErrUnsupportedParityType
 	}
+
+	// The number of workers is calculated as the itemCount divided by the quota (items per worker)
+	// We use the math.Ceil function to ensure the number of workers is at least 1
+	// in case itemCount < quota
+	workers := int(math.Ceil(float64(itemCount) / float64(quota)))
 	if workers > MAX_WORKERS {
 		return nil, fmt.Errorf("%w. Consider incrementing the items per worker or decreasing the number of items to filter", ErrMaxNumberOfWorkers)
 	}
