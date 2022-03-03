@@ -8,8 +8,14 @@ import (
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
 )
 
+const (
+	// Max number of goroutines that can be spawned by a worker pool
+	MAX_WORKERS = 20
+)
+
 var (
 	ErrUnsupportedParityType = errors.New("unsupported parity type. Must be one of 'even' or 'odd'")
+	ErrMaxNumberOfWorkers    = errors.New("max number of workers excedeed")
 )
 
 type pokemonService struct {
@@ -65,6 +71,9 @@ func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
 func (s pokemonService) GetByParity(parity string, workers int, itemCount int, quota int) ([]entity.Pokemon, error) {
 	if parity != "even" && parity != "odd" {
 		return nil, ErrUnsupportedParityType
+	}
+	if workers > MAX_WORKERS {
+		return nil, fmt.Errorf("%w. Consider incrementing the items per worker or decreasing the number of items to filter", ErrMaxNumberOfWorkers)
 	}
 
 	workerFunc := func(parity string, quota int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon) {
