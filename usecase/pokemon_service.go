@@ -48,6 +48,19 @@ func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
 	return pokemons, nil
 }
 
+// GetByParity returns an slice of pokemons filtered by "even" or "odd" parity,
+// using the worker pool pattern.
+//
+// The following arguments have to be passed:
+//
+// - parity: Must be "even" or "odd".
+//
+// - workers: The number of goroutines to spawn.
+//
+// - itemCount: The number of pokemons that must appear in the resulting slice.
+//
+// - quota: The number of pokemons each goroutine will process at most to verify if they match
+// the corresponding parity.
 func (s pokemonService) GetByParity(parity string, workers int, itemCount int, quota int) ([]entity.Pokemon, error) {
 	if parity != "even" && parity != "odd" {
 		return nil, ErrUnsupportedParityType
