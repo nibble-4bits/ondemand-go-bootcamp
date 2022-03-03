@@ -1,21 +1,9 @@
 package usecase
 
 import (
-	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
-)
-
-const (
-	// Max number of goroutines that can be spawned by a worker pool
-	MAX_WORKERS = 20
-)
-
-var (
-	ErrUnsupportedParityType = errors.New("unsupported parity type. Must be one of 'even' or 'odd'")
-	ErrMaxNumberOfWorkers    = errors.New("max number of workers excedeed")
 )
 
 type pokemonService struct {
@@ -55,77 +43,12 @@ func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
 	return pokemons, nil
 }
 
-// GetByParity returns an slice of pokemons filtered by "even" or "odd" parity,
-// using the worker pool pattern.
-//
-// The following arguments have to be passed:
-//
-// - parity: Must be "even" or "odd".
-//
-// - workers: The number of goroutines to spawn.
-//
-// - itemCount: The number of pokemons that must appear in the resulting slice.
-//
-// - quota: The number of pokemons each goroutine will process at most to verify if they match
-// the corresponding parity.
+// GetByParity returns an slice of pokemons filtered by "even" or "odd" parity.
 func (s pokemonService) GetByParity(parity string, workers int, itemCount int, quota int) ([]entity.Pokemon, error) {
-	if parity != "even" && parity != "odd" {
-		return nil, ErrUnsupportedParityType
-	}
-	if workers > MAX_WORKERS {
-		return nil, fmt.Errorf("%w. Consider incrementing the items per worker or decreasing the number of items to filter", ErrMaxNumberOfWorkers)
-	}
-
-	workerFunc := func(parity string, quota int, jobs <-chan entity.Pokemon, results chan<- entity.Pokemon) {
-		found := 0
-
-		for p := range jobs {
-			if (parity == "even" && p.ID%2 == 0) || (parity == "odd" && p.ID%2 == 1) {
-				found++
-				results <- p
-			}
-
-			if found == quota {
-				return
-			}
-		}
-
-	}
-
-	pokemons, err := s.repo.GetAll()
+	pokemons, err := s.repo.GetByParity(parity, workers, itemCount, quota)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
 
-	jobs := make(chan entity.Pokemon, len(pokemons))
-	results := make(chan entity.Pokemon, (len(pokemons)/2)+1)
-	wg := sync.WaitGroup{}
-	remainingItems := itemCount
-	for i := 0; i < workers; i++ {
-		actualQuota := quota
-		if remainingItems < quota {
-			actualQuota = remainingItems
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			workerFunc(parity, actualQuota, jobs, results)
-		}()
-		remainingItems -= quota
-	}
-
-	for _, pokemon := range pokemons {
-		jobs <- pokemon
-	}
-	close(jobs)
-
-	wg.Wait()
-	close(results)
-
-	var filteredPokemons []entity.Pokemon
-	for result := range results {
-		filteredPokemons = append(filteredPokemons, result)
-	}
-
-	return filteredPokemons, nil
+	return pokemons, nil
 }

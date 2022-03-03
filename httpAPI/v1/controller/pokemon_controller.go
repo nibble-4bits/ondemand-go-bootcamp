@@ -102,10 +102,10 @@ func GetEvenOrOddPokemons(service usecase.PokemonService) gin.HandlerFunc {
 			case errors.Is(err, adapter.ErrPokemonsNotFound):
 				c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 				return
-			case errors.Is(err, usecase.ErrUnsupportedParityType):
+			case errors.Is(err, adapter.ErrUnsupportedParityType):
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
-			case errors.Is(err, usecase.ErrMaxNumberOfWorkers):
+			case errors.Is(err, adapter.ErrMaxNumberOfWorkers):
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			default:
