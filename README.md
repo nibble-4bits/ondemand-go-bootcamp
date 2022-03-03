@@ -33,6 +33,27 @@ In the second deliverable I have:
    - Created a router group to have API versioning. Currently the `/v1` is supported.
    - Moved configuration logic to its own package in [`config`](/config).
 
+## Final deliverable
+
+In the final deliverable I have:
+
+1. Implemented a `/pokemons/type/{parity}/items/{items}/items_per_worker/{items_per_worker}` endpoint that returns a JSON array of pokemons filtered by the parity (even or odd) of their ID. This endpoint uses the _worker pool pattern_ to filter the pokemons.
+
+   The `{items}` parameter specifies how many pokemons must at least appear in the array, although if `{items}` is greater than the amount of total even or odd pokemons, all filtered pokemons will be returned.
+
+   The `{items_per_worker}` parameter specifies at most how many pokemons each worker will process.
+
+   The amount of workers that are spawned is computed with the following formula:
+
+   ```
+   #workers = ceil(items / items_per_worker)
+   ```
+
+   The endpoint is also limited to spawn up to 20 workers. If the amount of workers computed is greater than 20, then the endpoint will return a 400 HTTP error suggesting that the client should decrease the amount of `{items}` or increase the amount of `{items_per_worker}`.
+
+2. Wrote documentation for the new logic.
+3. Created test cases for the new logic.
+
 ---
 
 Everything below this line is the original README.
