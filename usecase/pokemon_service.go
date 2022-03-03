@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/entity"
 )
@@ -89,13 +90,18 @@ func (s pokemonService) GetByParity(parity string, workers int, itemCount int, q
 
 	jobs := make(chan entity.Pokemon, len(pokemons))
 	results := make(chan entity.Pokemon, (len(pokemons)/2)+1)
+	wg := sync.WaitGroup{}
 	remainingItems := itemCount
 	for i := 0; i < workers; i++ {
 		actualQuota := quota
 		if remainingItems < quota {
 			actualQuota = remainingItems
 		}
-		go workerFunc(parity, actualQuota, jobs, results)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			workerFunc(parity, actualQuota, jobs, results)
+		}()
 		remainingItems -= quota
 	}
 
@@ -104,15 +110,12 @@ func (s pokemonService) GetByParity(parity string, workers int, itemCount int, q
 	}
 	close(jobs)
 
+	wg.Wait()
+	close(results)
+
 	var filteredPokemons []entity.Pokemon
-	var resultsEnd int
-	if itemCount <= (len(pokemons)/2)+1 {
-		resultsEnd = itemCount
-	} else {
-		resultsEnd = (len(pokemons) / 2) + 1
-	}
-	for i := 0; i < resultsEnd; i++ {
-		filteredPokemons = append(filteredPokemons, <-results)
+	for result := range results {
+		filteredPokemons = append(filteredPokemons, result)
 	}
 
 	return filteredPokemons, nil
