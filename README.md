@@ -1,3 +1,29 @@
+# Personal notes
+
+## CSV dataset
+
+The CSV dataset was taken from [this](https://gist.github.com/armgilles/194bcff35001e7eb53a2a8b441e8b2c6) GitHub Gist.
+
+## First deliverable
+
+In the first deliverable I have implemented a simple Web API that reads from [pokemon.csv](/pokemon.csv) and exposes the following endpoints:
+
+1. `/pokemon/{id}`: Returns a pokemon's data by id, if exists
+2. `/pokemon`: Returns all pokemons' data
+
+I've also implemented a proposal of the Clean Architecture by dividing code in the following packages:
+
+- [`entity`](/entity): Entities layer
+- [`usecase`](/usecase): Use cases layer
+- [`adapter`](/adapter): Interface adapters layer
+- [`data`](/data) and [`httpapi`](/httpapi): Framework and drivers layer
+
+For the HTTP framework, I decided to use [Gin](https://github.com/gin-gonic/gin), mainly because of its popularity and ease of use.
+
+---
+
+Everything below this line is the original README.
+
 # On Demand Academy Go Bootcamp
 
 ## Introduction
@@ -71,11 +97,11 @@ Based on the self-study material and mentorship covered until this deliverable, 
 ```
 
 - The items in the CSV must have an ID element (int value)
-- The endpoint should get information from the CSV by some field ***(example: ID)***
+- The endpoint should get information from the CSV by some field **_(example: ID)_**
 - The result should be displayed as a response
 - Clean architecture proposal
 - Use best practices
-- Handle the Errors ***(CSV not valid, error connection, etc)***
+- Handle the Errors **_(CSV not valid, error connection, etc)_**
 
 > Note: what’s listed in this deliverable is just for guidance and to help you distribute your workload; you can deliver more or fewer items if necessary. However, if you deliver fewer items at this point, you have to cover the remaining tasks in the next deliverable.
 
@@ -104,8 +130,8 @@ items: Is an Int and is the amount of valid items you need to display as a respo
 items_per_workers: Is an Int and is the amount of valid items the worker should append to the response
 ```
 
-- Reject the values according to the query param ***type*** (you could use an ID column)
-- Instruct the workers to shut down according to the query param ***items_per_workers*** collected
+- Reject the values according to the query param **_type_** (you could use an ID column)
+- Instruct the workers to shut down according to the query param **_items_per_workers_** collected
 - The result should be displayed as a response
 - The response should be displayed when:
 
