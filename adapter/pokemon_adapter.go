@@ -13,8 +13,8 @@ var (
 )
 
 type pokemonAdapter struct {
-	dataSource DataSource
-	pokemons   []entity.Pokemon
+	csvDataSource CSVDataSource
+	pokemons      []entity.Pokemon
 }
 
 // NewPokemonAdapter receives a data source and will try to fetch the
@@ -22,24 +22,21 @@ type pokemonAdapter struct {
 //
 // If successful, an instance of *pokemonAdapter will be returned.
 // Otherwise and error will be returned.
-func NewPokemonAdapter(ds DataSource) (*pokemonAdapter, error) {
-	adapter := &pokemonAdapter{dataSource: ds}
+func NewPokemonAdapter(ds CSVDataSource) (*pokemonAdapter, error) {
+	adapter := &pokemonAdapter{csvDataSource: ds}
 
-	if err := adapter.getPokemons(); err != nil {
+	if err := adapter.loadPokemons(); err != nil {
 		return nil, err
 	}
 
 	return adapter, nil
 }
 
-func (a *pokemonAdapter) getPokemons() error {
-	csvRecords, err := a.dataSource.ReadCollection()
+func (a *pokemonAdapter) loadPokemons() error {
+	csvRecords, err := a.csvDataSource.ReadCollection()
 	if err != nil {
 		return err
 	}
-
-	// Remove header from slice of records
-	csvRecords = csvRecords[1:]
 
 	for _, v := range csvRecords {
 		p := entity.Pokemon{}
@@ -78,7 +75,7 @@ func (a *pokemonAdapter) GetByID(id int) (*entity.Pokemon, error) {
 	return nil, fmt.Errorf("%w %v", ErrPokemonNotFoundByID, id)
 }
 
-// GetAll returns an slice of all pokemons.
+// GetAll returns a slice of all pokemons.
 //
 // In case no pokemons are found at all, an ErrPokemonsNotFound error is returned.
 func (a *pokemonAdapter) GetAll() ([]entity.Pokemon, error) {

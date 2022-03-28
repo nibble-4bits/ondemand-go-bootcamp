@@ -4,44 +4,18 @@ import (
 	"log"
 
 	"github.com/nibble-4bits/ondemand-go-bootcamp/adapter"
+	"github.com/nibble-4bits/ondemand-go-bootcamp/config"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/data"
 	routerV1 "github.com/nibble-4bits/ondemand-go-bootcamp/httpAPI/v1/router"
 	"github.com/nibble-4bits/ondemand-go-bootcamp/usecase"
-
-	"github.com/spf13/viper"
 )
-
-// configuration is a set of properties that are loaded when the program runs
-type configuration struct {
-	// CSVDataPath is a path to the CSV file that contains the data that will be served by the HTTP API
-	CSVDataPath string
-}
-
-// config is a variable that holds the program configuration
-var config configuration
-
-func init() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
-	csvDataSource := data.NewCSVDataSource(config.CSVDataPath)
+	csvDataSourcePokemon := data.NewCSVDataSource(config.Config.PokemonCSVPath)
 
-	pokemonAdapter, err := adapter.NewPokemonAdapter(csvDataSource)
+	pokemonAdapter, err := adapter.NewPokemonAdapter(csvDataSourcePokemon)
 	if err != nil {
 		// Could handle the error here more gracefully, for example
 		// we could try and fetch the pokemons from another data source.
@@ -51,5 +25,26 @@ func main() {
 
 	pokemonService := usecase.NewPokemonService(pokemonAdapter)
 
-	routerV1.StartServer(pokemonService)
+	// ==========================================================================
+
+	csvDataSourceComment := data.NewCSVDataSource(config.Config.CommentCSVPath)
+	httpDataSourceComment := data.NewHTTPDataSource()
+	csvDataStoreComment := data.NewCSVDataStore(config.Config.CommentCSVPath)
+
+	commentAdapter, err := adapter.NewCommentAdapter(csvDataSourceComment, httpDataSourceComment, csvDataStoreComment)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	commentService := usecase.NewCommentService(commentAdapter)
+
+	// ==========================================================================
+
+	router := routerV1.CreateRouter()
+	routerGroup := routerV1.CreateRouterGroup(router)
+
+	routerV1.RegisterPokemonRoutes(routerGroup, pokemonService)
+	routerV1.RegisterCommentRoutes(routerGroup, commentService)
+
+	routerV1.StartServer(router)
 }

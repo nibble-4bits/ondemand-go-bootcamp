@@ -22,6 +22,7 @@ func NewPokemonService(r PokemonRepository) pokemonService {
 	return pokemonService{repo: r}
 }
 
+// GetByID returns a pokemon by ID from the underlying service repository.
 func (s pokemonService) GetByID(id int) (*entity.Pokemon, error) {
 	pokemonFound, err := s.repo.GetByID(id)
 	if err != nil {
@@ -31,6 +32,7 @@ func (s pokemonService) GetByID(id int) (*entity.Pokemon, error) {
 	return pokemonFound, nil
 }
 
+// GetByID returns all pokemons from the underlying service repository.
 func (s pokemonService) GetAll() ([]entity.Pokemon, error) {
 	pokemons, err := s.repo.GetAll()
 	if err != nil {

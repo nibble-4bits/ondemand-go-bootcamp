@@ -1,1 +1,2 @@
-CSVDataPath: pokemon.csv
+pokemon_csv_path: pokemon.csv
+comment_csv_path: comment.csv

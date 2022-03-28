@@ -20,6 +20,19 @@ I've also implemented a proposal of the Clean Architecture by dividing code in t
 
 For the HTTP framework, I decided to use [Gin](https://github.com/gin-gonic/gin), mainly because of its popularity and ease of use.
 
+## Second deliverable
+
+In the second deliverable I have:
+
+1. Implemented a `/comments/{id}` endpoint that fetches data from the [`/comments/{id}`](https://jsonplaceholder.typicode.com/comments/1) endpoint of the [JSON Placeholder API](https://jsonplaceholder.typicode.com/). Whenever a comment is fetched, it is saved in the local [`comment.csv`](/comment.csv) file. The next time a user requests that particular comment, it will be loaded from the CSV instead of the JSON Placeholder API, for faster response times.
+2. Created a custom HTTP client for making simple GET requests to any URL.
+3. Wrote more documentation for functions and methods.
+4. Created test cases for the `usecase`, `adapter` and `entity` layers. I'm using [`testify`](https://github.com/stretchr/testify) as testing toolkit.
+5. Refactored the codebase:
+   - Separated controller logic and route logic into their own packages.
+   - Created a router group to have API versioning. Currently the `/v1` is supported.
+   - Moved configuration logic to its own package in [`config`](/config).
+
 ---
 
 Everything below this line is the original README.
